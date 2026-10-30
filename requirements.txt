@@ -1,0 +1,8 @@
+Django
+channels
+daphne
+websockets
+requests
+python-dotenv
+upstox-python-sdk # bundles Upstox's compiled protobuf decoder for the V3 market feed
+protobuf

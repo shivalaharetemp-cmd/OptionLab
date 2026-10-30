@@ -1,0 +1,9 @@
+{% extends "dashboard/base.html" %}{% block n2 %}on{% endblock %}
+{% block body %}<div class="grid2"><div class="card"><h3>Performance by strategy (paper, after spread + slippage)</h3><div id="stats"></div></div><div class="card"><h3>Equity curve (cumulative R)</h3><div class="chart"><canvas id="c-eq"></canvas></div></div></div>
+<div class="card" style="margin-top:12px;overflow:auto"><h3>All signals</h3><table class="t" id="tbl"></table></div>{% endblock %}
+{% block js %}<script>
+(async()=>{const [st,sg]=await Promise.all([api('/api/stats'),api('/api/signals?limit=500')]);
+$('#stats').innerHTML=statsHtml(st);
+new Chart($('#c-eq'),{type:'line',data:{labels:st.curve.map((_,i)=>i+1),datasets:[{label:'Cumulative R',data:st.curve,borderColor:'#4c8dff',pointRadius:0,tension:.15}]},options:{animation:false,maintainAspectRatio:false,scales:{x:{ticks:{color:'#8b96a5'}},y:{ticks:{color:'#8b96a5'},grid:{color:'#1c222b'}}},plugins:{legend:{display:false}}}});
+$('#tbl').innerHTML='<tr><th>Time</th><th>Strategy</th><th>Contract</th><th>Conf</th><th>Entry</th><th>SL</th><th>T1/T2</th><th>Status</th><th>Exit</th><th>R</th></tr>'+sg.signals.map(s=>`<tr><td>${new Date(s.t).toLocaleString()}</td><td>${s.strategy}</td><td>${s.symbol}</td><td>${s.conf}</td><td>${fmt(s.entry)}</td><td>${fmt(s.sl)}</td><td>${fmt(s.t1)}/${fmt(s.t2)}</td><td>${s.status}</td><td>${s.exit??'–'}</td><td class="${(s.r||0)>=0?'up':'dn'}">${s.r??'–'}</td></tr>`).join('')})();
+</script>{% endblock %}

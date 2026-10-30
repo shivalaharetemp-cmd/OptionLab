@@ -1,0 +1,18 @@
+{% extends "dashboard/base.html" %}{% load static %}
+{% block n1 %}on{% endblock %}
+{% block hdr %}<select id="sym"></select><select id="exp"></select>
+<span id="clock" class="mut"></span><span id="feed" class="pill">feed…</span><span id="eng" class="pill">engine…</span><span id="prof" class="pill" title="Upstox account profile">profile…</span>{% endblock %}
+{% block body %}
+<div id="err" class="banner" style="display:none"></div>
+<div class="kpis" id="kpis"></div>
+<div class="tabs" id="tabs"><button data-t="signals" class="on">Signals</button><button data-t="chain">Option chain</button><button data-t="oi">OI &amp; flow</button><button data-t="greeks">Greeks &amp; IV</button><button data-t="time">Intraday trend</button></div>
+<section id="t-signals"><div class="grid2"><div><div class="card"><h3>Live buy signals (paper-tracked)</h3><div id="sigs"><span class="mut">Waiting for a setup that passes every filter… (see “Why no signal?” →)</span></div></div></div>
+<div><div class="card"><h3>Paper performance (this mode)</h3><div id="stats" class="mut">–</div></div><div class="card" style="margin-top:12px"><h3>Why no signal? (engine notes)</h3><div id="notes" class="mut">–</div></div></div></div></section>
+<section id="t-chain" style="display:none"><div class="card" style="overflow:auto"><table class="chain" id="chain"></table></div></section>
+<section id="t-oi" style="display:none"><div class="grid2"><div class="card"><h3>Open interest by strike</h3><div class="chart"><canvas id="c-oi"></canvas></div></div><div class="card"><h3>Change in OI since prev close</h3><div class="chart"><canvas id="c-doi"></canvas></div></div>
+<div class="card"><h3>Net gamma exposure by strike (proxy)</h3><div class="chart"><canvas id="c-gex"></canvas></div></div><div class="card"><h3>Strike buildup (ATM ±5)</h3><div id="build" class="mut"></div></div></div></section>
+<section id="t-greeks" style="display:none"><div class="grid2"><div class="card"><h3>IV smile (%)</h3><div class="chart"><canvas id="c-iv"></canvas></div></div><div class="card"><h3>Gamma by strike</h3><div class="chart"><canvas id="c-gam"></canvas></div></div>
+<div class="card"><h3>Theta by strike (₹/day per unit)</h3><div class="chart"><canvas id="c-the"></canvas></div></div><div class="card"><h3>Vega by strike (₹ per 1 vol-pt)</h3><div class="chart"><canvas id="c-veg"></canvas></div></div></div></section>
+<section id="t-time" style="display:none"><div class="grid2"><div class="card"><h3>Spot &amp; max pain</h3><div class="chart"><canvas id="c-spot"></canvas></div></div><div class="card"><h3>PCR (OI)</h3><div class="chart"><canvas id="c-pcr"></canvas></div></div><div class="card"><h3>ATM IV (%)</h3><div class="chart"><canvas id="c-aiv"></canvas></div></div></div></section>
+{% endblock %}
+{% block js %}<script src="{% static 'dashboard/app.js' %}"></script>{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "dashboard/base.html" %}{% block n3 %}on{% endblock %}
+{% block body %}{% if not enabled %}<div class="banner">Explorer is disabled. Set EXPLORER_ENABLED=1 (it proxies read-only GET calls with your token — keep it on localhost).</div>{% endif %}
+<div class="card"><h3>Every GET endpoint your Analytics Token can call (read-only; account/portfolio ones need a whitelisted static IP)</h3>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><select id="ep" style="min-width:380px"></select><button id="run">Run</button></div><div id="note" class="mut" style="margin:6px 0"></div><div id="params" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px"></div></div>
+<div class="card" style="margin-top:12px"><h3>Response</h3><pre id="out">–</pre></div>{% endblock %}
+{% block js %}<script>
+let EP=[];
+(async()=>{const d=await api('/api/explorer/endpoints');EP=d.endpoints;const g={};EP.forEach((e,i)=>(g[e.category]=g[e.category]||[]).push([e,i]));
+$('#ep').innerHTML=Object.entries(g).map(([c,l])=>`<optgroup label="${c}">${l.map(([e,i])=>`<option value="${i}">${e.id} — ${e.path}${e.static_ip?'  [static IP]':''}</option>`).join('')}</optgroup>`).join('');
+const draw=()=>{const e=EP[$('#ep').value];$('#note').textContent=e.note||'';$('#params').innerHTML=e.params.map(p=>`<label class="mut">${p.name} <small>(${p.in}${p.required?', required':''})</small><input data-n="${p.name}" value="${(p.example||'').replace(/"/g,'&quot;')}" style="width:100%"></label>`).join('')};
+$('#ep').onchange=draw;draw();
+$('#run').onclick=async()=>{const e=EP[$('#ep').value],params={};document.querySelectorAll('#params input').forEach(i=>params[i.dataset.n]=i.value);$('#out').textContent='…';
+const r=await post('/api/explorer/call',{path:e.path,params});$('#out').textContent=JSON.stringify(r,null,2)}})();
+</script>{% endblock %}

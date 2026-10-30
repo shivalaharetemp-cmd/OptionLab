@@ -1,0 +1,11 @@
+{% load static %}<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OptionLab — buyer's options analytics</title><link rel="stylesheet" href="{% static 'dashboard/style.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script></head><body>
+<header><span class="brand">OptionLab</span>
+<nav><a href="/" class="{% block n1 %}{% endblock %}">Dashboard</a><a href="/journal/" class="{% block n2 %}{% endblock %}">Signal journal</a><a href="/explorer/" class="{% block n3 %}{% endblock %}">API explorer</a></nav>
+{% block hdr %}{% endblock %}<span style="flex:1"></span>
+<span class="pill {% if mode == 'demo' %}warn{% else %}ok{% endif %}" title="demo = built-in simulator, not market data">{{ mode|upper }} MODE</span>
+<span class="pill ok" title="Selling signals are hard-disabled">BUY-ONLY</span></header>
+<main>{% if mode == 'demo' %}<div class="banner">DEMO MODE — simulated market on a replayed clock. Nothing here is real data or a real signal. Set UPSTOX_ANALYTICS_TOKEN in .env for live.</div>{% endif %}
+{% block body %}{% endblock %}</main>
+<script src="{% static 'dashboard/common.js' %}"></script>{% block js %}{% endblock %}</body></html>
